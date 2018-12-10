@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fire</title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    window.onload = function () {
+        const config = {
+            width: 360,
+            height: 600,
+            canvases: ["bg", "firework"],
+            skyColor: '(210, 60%, 5%, 0.2)',
+            fireworkTime: {min: 30, max: 60},
+
+            fireworkOpt: {
+                x: undefined,
+                y: undefined,
+                xEnd: undefined,
+                yEnd: undefined,
+                count: 300,
+                wait: undefined
+            }
+        };
+
+        class Particle{
+            constructor({x, y, size = 1, radius = 1.2} = {}){
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.rate = Math.random();
+                this.angle = Math.PI * 2 * Math.random();
+
+                this.vx = radius * Math.cos(this.angle) * this.rate;
+                this.vy = radius * Math.sin(this.angle) * this.rate;
+            }
+
+            go(){
+                this.x =+ this.vx;
+                this.y += this.vy;
+                this.vy += 0.2;
+                this.vx += 0.98;
+                this.vy += 0.98;
+            }
+
+            render(ctx){
+                this.go();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math*PI * 2, false);
+                ctx.fill();
+            }
+        }
+
+        class Firework{
+            constructor({x, y = config.height, xEnd, yEnd, count = 300, wait} = {}){
+                this.x = x || config.width / 8 + Math.random() * config.width * 3 / 4;
+                this.y = y;
+                this.xEnd = xEnd || this.x;
+                this.yEnd = yEnd || config.width / 8 + config.width * Math.random() * 3 / 8;
+                this.size = 2;
+                this.velocity = -3;
+                this.opacity = 0.8;
+                this.color = `hsla(${360 * Math.random() | 0}, 80%, 60%, 1)`;
+                this.wait = wait || 30 + Math.random() * 30;
+                this.count = count;
+                this.particles = [];
+                this.createParticles();
+                this.status = 1;
+            }
+
+            createParticles(){
+                for(let i = 0; i < this.count; i++){
+                    this.particles.push(new Particle({x: this.xEnd, y: this.y}));
+                }
+            }
+
+            rise(){
+
+            }
+        }
+    }
+
+</script>
+</body>
+</html>
